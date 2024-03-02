@@ -16,8 +16,8 @@ public class UseCaseProjetoPost {
     }
 
     public ResponseEntity<Projeto> NovoProjeto(@RequestParam String nome, @RequestParam String descrisao,
-                                               @RequestParam String resumoFuncionamento)
-    { return projetoGateway.NovoProjeto(nome, descrisao, resumoFuncionamento);}
+                                               @RequestParam String resumoFuncionamento, @RequestParam String linkGit)
+    { return projetoGateway.NovoProjeto(nome, descrisao, resumoFuncionamento, linkGit);}
 
     public ResponseEntity<Projeto> EnviarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files)
     { return projetoGateway.EnviarArquivos(id, files);}

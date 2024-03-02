@@ -9,6 +9,7 @@ public record Projeto(
         String nome,
         String descrisao,
         String codigoidentificador,
+        String linkGit,
         Status status,
         String resumoFuncionamento,
         List<String> arquivos,

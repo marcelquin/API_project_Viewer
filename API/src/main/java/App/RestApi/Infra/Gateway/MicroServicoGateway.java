@@ -16,7 +16,8 @@ public interface MicroServicoGateway {
     public ResponseEntity<MicroService> BuscaMicroServicosPorId(@RequestParam Long id);
 
     public ResponseEntity<Resource> DownloadDocumentoMicroServicosPorId(@RequestParam Long id);
-    public ResponseEntity<MicroService> NovoMicroServicos(@RequestParam Long idProjeto,@RequestParam String nome,@RequestParam String descrisao,@RequestParam String linkGit);
+    public ResponseEntity<MicroService> NovoMicroServico(@RequestParam Long idProjeto,@RequestParam String nome,@RequestParam String descrisao,@RequestParam String linkGit,
+                                                          @RequestParam String resumoFuncionamento);
     public ResponseEntity<MicroService> EditarInformacoesMicroServicos(@RequestParam Long id,@RequestParam String nome,
                                                        @RequestParam String descrisao);
     public ResponseEntity<MicroService> AlterarResumoFuncionamentoMicroServicos(@RequestParam Long id, @RequestParam String resumoFuncionamento);

@@ -23,6 +23,8 @@ public class BaseEntity {
 
     private String codigoidentificador;
 
+    private String linkGit;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

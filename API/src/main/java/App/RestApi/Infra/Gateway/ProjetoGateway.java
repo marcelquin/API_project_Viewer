@@ -16,7 +16,7 @@ public interface ProjetoGateway {
     public ResponseEntity<Projeto> BuscaProjetoPorId(@RequestParam Long id);
     public ResponseEntity<Resource> DownloadDocumentoProjetoPorId(@RequestParam Long id);
     public ResponseEntity<Projeto> NovoProjeto(@RequestParam String nome, @RequestParam String descrisao,
-                                               @RequestParam String resumoFuncionamento);
+                                               @RequestParam String resumoFuncionamento, @RequestParam String linkGit);
 
     public ResponseEntity<Projeto> EditarInformacoes(@RequestParam Long id,@RequestParam String nome,
                                                      @RequestParam String descrisao);
