@@ -13,7 +13,6 @@ import java.util.List;
 public interface ProjetoGateway {
 
     public ResponseEntity<List<ProjetoEntity>> ListarProjetos();
-
     public ResponseEntity<Projeto> BuscaProjetoPorId(@RequestParam Long id);
     public ResponseEntity<Resource> DownloadDocumentoProjetoPorId(@RequestParam Long id);
     public ResponseEntity<Projeto> NovoProjeto(@RequestParam String nome, @RequestParam String descrisao,

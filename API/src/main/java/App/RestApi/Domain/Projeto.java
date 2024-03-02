@@ -15,6 +15,8 @@ public record Projeto(
         LocalDateTime dataCriacao,
         LocalDateTime dataInicio,
         LocalDateTime dataTeste,
-        LocalDateTime dataConclusao
+        LocalDateTime dataConclusao,
+        LocalDateTime dataCancelamento,
+        Boolean cancelado
 ) {
 }

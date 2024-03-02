@@ -30,6 +30,8 @@ public class BaseEntity {
 
     private List<String> Arquivos;
 
+    private Boolean cancelado;
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataCriacao;
 
@@ -41,6 +43,9 @@ public class BaseEntity {
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime dataConclusao;
+
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime dataCancelamento;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime timeStamp;
