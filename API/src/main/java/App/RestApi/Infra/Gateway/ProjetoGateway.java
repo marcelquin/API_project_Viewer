@@ -22,6 +22,7 @@ public interface ProjetoGateway {
                                                      @RequestParam String descrisao);
 
     public ResponseEntity<Projeto> AlterarResumoFuncionamento(@RequestParam Long id, @RequestParam String resumoFuncionamento);
+    public ResponseEntity<Projeto> AlterarLinkGitProjeto(Long id, String link);
     public ResponseEntity<Projeto> EnviarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files);
     public ResponseEntity<Projeto> AdicionarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files);
     public ResponseEntity<Projeto> AlterarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files);

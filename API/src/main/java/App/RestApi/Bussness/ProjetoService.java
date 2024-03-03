@@ -1,6 +1,6 @@
 package App.RestApi.Bussness;
 
-import App.RestApi.Domain.MicroService;
+import App.RestApi.Bussness.File.FileServerService;
 import App.RestApi.Domain.Projeto;
 import App.RestApi.Infra.Exceptions.EntityNotFoundException;
 import App.RestApi.Infra.Exceptions.IllegalStatusException;
@@ -11,25 +11,39 @@ import App.RestApi.Infra.Persistence.Entity.ProjetoEntity;
 import App.RestApi.Infra.Persistence.Enum.Status;
 import App.RestApi.Infra.Persistence.Repository.MicroServicoRepository;
 import App.RestApi.Infra.Persistence.Repository.ProjetoRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 
 @Service
 public class ProjetoService implements ProjetoGateway {
 
     private final ProjetoRepository projetoRepository;
     private final MicroServicoRepository microServicoRepository;
+    private final FileServerService fileServerService;
 
-    public ProjetoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository) {
+    @Value("${App.caminhozip}")
+    private String caminhozip;
+
+    public ProjetoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository, FileServerService fileServerService) {
         this.projetoRepository = projetoRepository;
         this.microServicoRepository = microServicoRepository;
+        this.fileServerService = fileServerService;
     }
 
 
@@ -74,6 +88,33 @@ public class ProjetoService implements ProjetoGateway {
     @Override
     public ResponseEntity<Resource> DownloadDocumentoProjetoPorId(Long id)
     {
+        try{
+            if(id != null)
+            {
+                if(projetoRepository.existsById(id))
+                {
+                    ProjetoEntity entity = projetoRepository.findById(id).get();
+                    String filename = entity.getCodigoidentificador()+".zip";
+                    Path filePath  = Path.of("caminhozip"+filename);
+                    if (!Files.exists(filePath)) {
+                        throw new FileNotFoundException(filename + " was not found on the server");
+                    }
+                    Resource resource = new UrlResource(filePath.toUri());
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.add("File-Name", filename);
+                    httpHeaders.add(CONTENT_DISPOSITION, "attachment;File-Name=" + resource.getFilename());
+                    return ResponseEntity.ok().contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
+                            .headers(httpHeaders).body(resource);
+                }
+                else
+                {throw new EntityNotFoundException();}
+            }
+            else
+            {throw new NullargumentsException();}
+        }catch (Exception e)
+        {
+            e.getMessage();
+        }
         return null;
     }
 
@@ -166,7 +207,7 @@ public class ProjetoService implements ProjetoGateway {
         }
         return null;
     }
-
+    @Override
     public ResponseEntity<Projeto> AlterarLinkGitProjeto(Long id, String link)
     {
         try{
@@ -205,8 +246,14 @@ public class ProjetoService implements ProjetoGateway {
                 if(projetoRepository.existsById(id))
                 {
                     ProjetoEntity entity = projetoRepository.findById(id).get();
-
+                    List<String> arquivos = new ArrayList<>();
+                    for(MultipartFile file : files)
+                    {
+                        arquivos.add(file.getOriginalFilename());
+                    }
+                    entity.setArquivos(arquivos);
                     projetoRepository.save(entity);
+                    fileServerService.Upload(entity.getCodigoidentificador(), files);
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -233,7 +280,14 @@ public class ProjetoService implements ProjetoGateway {
                 if(projetoRepository.existsById(id))
                 {
                     ProjetoEntity entity = projetoRepository.findById(id).get();
+                    List<String> arquivos = new ArrayList<>();
+                    for(MultipartFile file : files)
+                    {
+                        arquivos.add(file.getOriginalFilename());
+                    }
+                    entity.getArquivos().addAll(arquivos);
                     projetoRepository.save(entity);
+                    fileServerService.AddFile(entity.getCodigoidentificador(), files);
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -260,6 +314,13 @@ public class ProjetoService implements ProjetoGateway {
                 if(projetoRepository.existsById(id))
                 {
                     ProjetoEntity entity = projetoRepository.findById(id).get();
+                    List<String> arquivos = new ArrayList<>();
+                    fileServerService.Update(entity.getCodigoidentificador(), entity.getArquivos(),files);
+                    for(MultipartFile file : files)
+                    {
+                        arquivos.add(file.getOriginalFilename());
+                    }
+                    entity.setArquivos(arquivos);
                     projetoRepository.save(entity);
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),

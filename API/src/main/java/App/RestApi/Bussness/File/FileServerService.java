@@ -1,9 +1,7 @@
-package App.ApiRest.Bussness;
+package App.RestApi.Bussness.File;
 
-import App.ApiRest.Bussness.Util.UtilService;
-import App.ApiRest.Domain.Arquivo;
-import App.ApiRest.Infra.Exceptions.NullargumentsException;
-import App.ApiRest.Infra.Gateway.FileServerGateway;
+
+import App.RestApi.Infra.Exceptions.NullargumentsException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -27,7 +25,7 @@ import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISP
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
-public class FileServerService implements FileServerGateway {
+public class FileServerService {
 
     @Value("${app.caminho}")
     private String caminhoImagem;
@@ -37,8 +35,7 @@ public class FileServerService implements FileServerGateway {
 
     private UtilService utilService;
 
-    @Override
-    public ResponseEntity<Arquivo> Upload(String codigo, MultipartFile[] files)
+    public void Upload(String codigo, MultipartFile[] files)
     {
         try
         {
@@ -60,12 +57,10 @@ public class FileServerService implements FileServerGateway {
         {
             e.getMessage();
         }
-        return null;
     }
 
 
-    @Override
-    public ResponseEntity<Arquivo> Update(String codigo, List<String> arquivos, MultipartFile[] files)
+    public void Update(String codigo, List<String> arquivos, MultipartFile[] files)
     {
         try
         {
@@ -88,11 +83,9 @@ public class FileServerService implements FileServerGateway {
         {
             e.getMessage();
         }
-        return null;
     }
 
-    @Override
-    public ResponseEntity<Arquivo> AddFile(String codigo, MultipartFile[] files)
+    public void AddFile(String codigo, MultipartFile[] files)
     {
         try
         {
@@ -114,10 +107,8 @@ public class FileServerService implements FileServerGateway {
         {
             e.getMessage();
         }
-        return null;
     }
 
-    @Override
     public ResponseEntity<Resource> downloadFiles(String codigo) throws IOException
     {
         try
@@ -158,7 +149,7 @@ public class FileServerService implements FileServerGateway {
         file.delete();
     }
 
-    public ResponseEntity<Arquivo> ziparDirectory(String codigo)throws IOException
+    public void ziparDirectory(String codigo)throws IOException
     {
         try {
             String sourceFile = caminhoImagem + codigo+ "//";
@@ -169,13 +160,11 @@ public class FileServerService implements FileServerGateway {
             UtilService.zipFile(fileToZip, fileToZip.getName(), zipOut);
             zipOut.close();
             fos.close();
-            return new ResponseEntity<>(OK);
         }catch (Exception e)
         {
             System.out.println("Ops algo deu errado zip!");
             e.getMessage();
         }
-        return null;
     }
 
 }

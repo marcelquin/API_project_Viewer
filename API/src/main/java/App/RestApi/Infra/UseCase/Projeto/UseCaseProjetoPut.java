@@ -21,7 +21,8 @@ public class UseCaseProjetoPut {
 
     public ResponseEntity<Projeto> AlterarResumoFuncionamento(@RequestParam Long id, @RequestParam String resumoFuncionamento)
     { return projetoGateway.AlterarResumoFuncionamento(id, resumoFuncionamento);}
-
+    public ResponseEntity<Projeto> AlterarLinkGitProjeto(Long id, String link)
+    { return projetoGateway.AlterarLinkGitProjeto(id, link);}
     public ResponseEntity<Projeto> AdicionarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files)
     { return projetoGateway.AdicionarArquivos(id, files);}
     public ResponseEntity<Projeto> AlterarArquivos(@RequestParam Long id,@RequestPart MultipartFile[] files)
