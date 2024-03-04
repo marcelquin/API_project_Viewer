@@ -140,6 +140,9 @@ public class MicroServicoService implements MicroServicoGateway {
                         entity.setStatus(Status.CRIADO);
                         entity.setDataCriacao(LocalDateTime.now());
                         entity.setTimeStamp(LocalDateTime.now());
+                        int dig = (int) (111111 + Math.random() * 999999);
+                        String codigo = "MS_"+dig;
+                        entity.setCodigoidentificador(codigo);
                         microServicoRepository.save(entity);
                         projeto.getMicroServicoEntities().add(entity);
                         projetoRepository.save(projeto);
@@ -440,7 +443,7 @@ public class MicroServicoService implements MicroServicoGateway {
     }
 
     @Override
-    public ResponseEntity<MicroService> FinalizarFragmentoMicroServicos(Long id, Boolean finalizar)
+    public ResponseEntity<MicroService> FinalizarMicroServicos(Long id, Boolean finalizar)
     {
         try{
             if(id != null && finalizar != null)

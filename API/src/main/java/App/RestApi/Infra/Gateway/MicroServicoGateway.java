@@ -28,6 +28,6 @@ public interface MicroServicoGateway {
     public ResponseEntity<MicroService> AlterarLinkGitMicroServicos(@RequestParam Long id,@RequestParam String link);
     public ResponseEntity<MicroService> IniciarDesenvolvimentoMicroServicos(@RequestParam Long id,@RequestParam Boolean Iniciar);
     public ResponseEntity<MicroService> IniciarTestesMicroServicos(@RequestParam Long id, @RequestParam Boolean Iniciar);
-    public ResponseEntity<MicroService> FinalizarFragmentoMicroServicos(@RequestParam Long id, @RequestParam Boolean finalizar);
+    public ResponseEntity<MicroService> FinalizarMicroServicos(@RequestParam Long id, @RequestParam Boolean finalizar);
     public ResponseEntity<MicroService> CancelarFragmentoMicroServicos(@RequestParam Long id, @RequestParam Boolean Cancelar);
 }

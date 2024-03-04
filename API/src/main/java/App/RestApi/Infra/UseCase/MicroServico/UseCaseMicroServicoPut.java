@@ -32,8 +32,8 @@ public class UseCaseMicroServicoPut {
     { return microServicoGateway.IniciarDesenvolvimentoMicroServicos(id, Iniciar);}
     public ResponseEntity<MicroService> IniciarTestesMicroServicos(@RequestParam Long id, @RequestParam Boolean Iniciar)
     { return microServicoGateway.IniciarTestesMicroServicos(id, Iniciar);}
-    public ResponseEntity<MicroService> FinalizarFragmentoMicroServicos(@RequestParam Long id, @RequestParam Boolean finalizar)
-    { return microServicoGateway.FinalizarFragmentoMicroServicos(id, finalizar);}
+    public ResponseEntity<MicroService> FinalizarMicroServicos(@RequestParam Long id, @RequestParam Boolean finalizar)
+    { return microServicoGateway.FinalizarMicroServicos(id, finalizar);}
     public ResponseEntity<MicroService> CancelarFragmentoMicroServicos(@RequestParam Long id, @RequestParam Boolean Cancelar)
     { return microServicoGateway.CancelarFragmentoMicroServicos(id, Cancelar);}
 }

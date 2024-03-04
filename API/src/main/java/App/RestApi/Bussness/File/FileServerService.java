@@ -27,11 +27,10 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 public class FileServerService {
 
-    @Value("${app.caminho}")
-    private String caminhoImagem;
-
+    @Value("${App.caminhoImagem}")
+    private String caminhoImagem; //"D:\\SPRING BOOT\\Arquivos\\";
     @Value("${App.caminhozip}")
-    private String caminhozip;
+    private String caminhozip;  // = "D:\\SPRING BOOT\\Arquivos\\Zip\\";
 
     private UtilService utilService;
 

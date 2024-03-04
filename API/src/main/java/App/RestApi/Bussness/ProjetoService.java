@@ -95,7 +95,7 @@ public class ProjetoService implements ProjetoGateway {
                 {
                     ProjetoEntity entity = projetoRepository.findById(id).get();
                     String filename = entity.getCodigoidentificador()+".zip";
-                    Path filePath  = Path.of("caminhozip"+filename);
+                    Path filePath  = Path.of(caminhozip+filename);
                     if (!Files.exists(filePath)) {
                         throw new FileNotFoundException(filename + " was not found on the server");
                     }
