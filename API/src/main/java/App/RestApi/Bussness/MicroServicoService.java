@@ -1,5 +1,6 @@
 package App.RestApi.Bussness;
 
+import App.RestApi.Bussness.Evento.EventosService;
 import App.RestApi.Bussness.File.FileServerService;
 import App.RestApi.Domain.MicroService;
 import App.RestApi.Infra.Exceptions.EntityNotFoundException;
@@ -8,6 +9,7 @@ import App.RestApi.Infra.Exceptions.NullargumentsException;
 import App.RestApi.Infra.Gateway.MicroServicoGateway;
 import App.RestApi.Infra.Persistence.Entity.MicroServicoEntity;
 import App.RestApi.Infra.Persistence.Entity.ProjetoEntity;
+import App.RestApi.Infra.Persistence.Enum.Acao;
 import App.RestApi.Infra.Persistence.Enum.Status;
 import App.RestApi.Infra.Persistence.Repository.MicroServicoRepository;
 import App.RestApi.Infra.Persistence.Repository.ProjetoRepository;
@@ -36,14 +38,16 @@ public class MicroServicoService implements MicroServicoGateway {
     private final ProjetoRepository projetoRepository;
     private final MicroServicoRepository microServicoRepository;
     private final FileServerService fileServerService;
+    private final EventosService eventosService;
 
     @Value("${App.caminhozip}")
     private String caminhozip;
 
-    public MicroServicoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository, FileServerService fileServerService) {
+    public MicroServicoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository, FileServerService fileServerService, EventosService eventosService) {
         this.projetoRepository = projetoRepository;
         this.microServicoRepository = microServicoRepository;
         this.fileServerService = fileServerService;
+        this.eventosService = eventosService;
     }
 
     @Override
@@ -146,6 +150,10 @@ public class MicroServicoService implements MicroServicoGateway {
                         microServicoRepository.save(entity);
                         projeto.getMicroServicoEntities().add(entity);
                         projetoRepository.save(projeto);
+                        eventosService.NovoEventoMicroServico(Acao.NOVO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador()
                                 , entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -181,6 +189,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     entity.setDescrisao(descrisao);
                     entity.setTimeStamp(LocalDateTime.now());
                     microServicoRepository.save(entity);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador()
                             , entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -211,6 +223,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     entity.setFuncionamento(resumoFuncionamento);
                     entity.setTimeStamp(LocalDateTime.now());
                     microServicoRepository.save(entity);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                              entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -245,6 +261,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     entity.setArquivos(arquivos);
                     entity.setTimeStamp(LocalDateTime.now());
                     microServicoRepository.save(entity);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     fileServerService.Upload(entity.getCodigoidentificador(), files);
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                              entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
@@ -281,6 +301,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     entity.getArquivos().addAll(arquivos);
                     microServicoRepository.save(entity);
                     fileServerService.AddFile(entity.getCodigoidentificador(), files);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -315,6 +339,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     }
                     entity.setArquivos(arquivos);
                     microServicoRepository.save(entity);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -345,6 +373,10 @@ public class MicroServicoService implements MicroServicoGateway {
                     entity.setLinkGit(link);
                     entity.setTimeStamp(LocalDateTime.now());
                     microServicoRepository.save(entity);
+                    eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                              entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -383,6 +415,10 @@ public class MicroServicoService implements MicroServicoGateway {
                         entity.setDataInicio(LocalDateTime.now());
                         entity.setTimeStamp(LocalDateTime.now());
                         microServicoRepository.save(entity);
+                        eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -423,6 +459,10 @@ public class MicroServicoService implements MicroServicoGateway {
                         entity.setDataTestes(LocalDateTime.now());
                         entity.setTimeStamp(LocalDateTime.now());
                         microServicoRepository.save(entity);
+                        eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -462,6 +502,10 @@ public class MicroServicoService implements MicroServicoGateway {
                         entity.setDataConclusao(LocalDateTime.now());
                         entity.setTimeStamp(LocalDateTime.now());
                         microServicoRepository.save(entity);
+                        eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -496,6 +540,10 @@ public class MicroServicoService implements MicroServicoGateway {
                         entity.setCancelado(Boolean.TRUE);
                         entity.setTimeStamp(LocalDateTime.now());
                         microServicoRepository.save(entity);
+                        eventosService.NovoEventoMicroServico(Acao.ALTERACAO_MICROSERVICO,entity.getNome(),entity.getDescrisao(),
+                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
+                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
+                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         MicroService response = new MicroService(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());

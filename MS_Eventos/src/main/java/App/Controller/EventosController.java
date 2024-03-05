@@ -74,8 +74,8 @@ public class EventosController {
             @ApiResponse(responseCode = "400", description = "Parametros inválidos"),
             @ApiResponse(responseCode = "500", description = "Ops! algo errado"),
     })
-    @PostMapping("/NovoEventoServico")
-    public ResponseEntity<Projeto>NovoEventoServico(Acao acao,
+    @PostMapping("/NovoEventoProjetoServico")
+    public ResponseEntity<Projeto>NovoEventoProjetoServico(Acao acao,
                                                     String nome,
                                                     String descrisao,
                                                     String codigoidentificador,
