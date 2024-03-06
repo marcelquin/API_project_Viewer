@@ -8,6 +8,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,14 +24,17 @@ import java.util.zip.ZipOutputStream;
 
 import static org.apache.tomcat.util.http.fileupload.FileUploadBase.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.OK;
-
 @Service
 public class FileServerService {
 
-    @Value("${App.caminhoImagem}")
-    private String caminhoImagem; //"D:\\SPRING BOOT\\Arquivos\\";
-    @Value("${App.caminhozip}")
-    private String caminhozip;  // = "D:\\SPRING BOOT\\Arquivos\\Zip\\";
+
+    @Value("#{environment['App.caminhoImagem']}")
+    //@Value("${App.caminhoImagem}")
+    private String caminhoImagem;
+
+    @Value("#{environment['App.caminhozip']}")
+    //@Value("${App.caminhozip}")
+    private String caminhozip;
 
     private UtilService utilService;
 

@@ -1,53 +1,43 @@
 version: "3"
 services:
 
-  ms_gprojeto_db:
+  project_Viewer_db:
+    container_name: project_Viewer_db
     image: 'mysql'
     environment:
-        - 'MYSQL_DATABASE=ms_gprojeto_db'
-        - 'MYSQL_PASSWORD=mh8q23pr99'
-        - 'MYSQL_ROOT_PASSWORD=mh8q23pr99'
-        - 'MYSQL_USER=admin'
+      - 'MYSQL_DATABASE=ms_gprojeto_db'
+      - 'MYSQL_PASSWORD=mh8q23pr99'
+      - 'MYSQL_ROOT_PASSWORD=mh8q23pr99'
+      #- 'MYSQL_USER=admin'
     ports:
         - 3306:3306
     volumes:
-        - /db/ms_gprojeto_db
+      - Database:/app/db/project_Viewer_db
 
-  ms_gprojeto_api:
-    build: /ms_projeto
-    container_name: api_gerencia_projetos
+  project_viewer_api:
+    build: /API
+    container_name: project_Viewer_api
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://ms_gprojeto_db:3306/ms_gprojeto_db
-      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_URL=jdbc:mysql://project_Viewer_db:3306/project_Viewer_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=mh8q23pr99
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    depends_on:
-      - ms_gprojeto_db
-      - ms_fileserver_api
-    restart: on-failure
-    
-  ms_fileserver_api:
-    build: /File_Server
-    container_name: ms_fileServer
-    ports:
-      - 8081:8081
-    environment:
-      - springdoc.swagger-ui.tryItOutEnabled=true
-      - springdoc.swagger-ui.filter=true
-      - springdoc.swagger-ui.path=/api-documentation
-      - springdoc.api-docs.path=/api-api-docs
-      - app.caminhoImagem=//app//Dados//
-      - app.caminhoImagemZip=//app//Dados//Zip//
       - spring.servlet.multipart.max-file-size=200MB
       - spring.servlet.multipart.max-request-size=200MB
+      - app.caminhoImagem=/app/
+      - app.caminhozip=/app/Zip/
+    depends_on:
+      - project_Viewer_db
     volumes:
-      - update:/app/Dados/
-      - updatezip:/app/Dados/Zip/
-    restart: on-failure 
+      - Upload:/app/
+      - Uploadzip:/app/Zip/
+    restart: on-failure
+
     
 
 volumes:
-  update:
-  updatezip:
+  Upload:
+  Uploadzip:
+  Database:

@@ -1,6 +1,6 @@
 package App.RestApi.Bussness;
 
-import App.RestApi.Bussness.Evento.EventosService;
+
 import App.RestApi.Bussness.File.FileServerService;
 import App.RestApi.Domain.Projeto;
 import App.RestApi.Infra.Exceptions.EntityNotFoundException;
@@ -9,10 +9,10 @@ import App.RestApi.Infra.Exceptions.NullargumentsException;
 import App.RestApi.Infra.Gateway.ProjetoGateway;
 import App.RestApi.Infra.Persistence.Entity.MicroServicoEntity;
 import App.RestApi.Infra.Persistence.Entity.ProjetoEntity;
-import App.RestApi.Infra.Persistence.Enum.Acao;
 import App.RestApi.Infra.Persistence.Enum.Status;
 import App.RestApi.Infra.Persistence.Repository.MicroServicoRepository;
 import App.RestApi.Infra.Persistence.Repository.ProjetoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -38,17 +38,17 @@ public class ProjetoService implements ProjetoGateway {
     private final ProjetoRepository projetoRepository;
     private final MicroServicoRepository microServicoRepository;
     private final FileServerService fileServerService;
-    private final EventosService eventosService;
 
-    @Value("${App.caminhozip}")
-    private String caminhozip;
-
-    public ProjetoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository, FileServerService fileServerService, EventosService eventosService) {
+    public ProjetoService(ProjetoRepository projetoRepository, MicroServicoRepository microServicoRepository, FileServerService fileServerService) {
         this.projetoRepository = projetoRepository;
         this.microServicoRepository = microServicoRepository;
         this.fileServerService = fileServerService;
-        this.eventosService = eventosService;
     }
+
+    @Value("#{environment['App.caminhozip']}")
+    private String caminhozip;
+
+
 
 
     @Override
@@ -141,10 +141,6 @@ public class ProjetoService implements ProjetoGateway {
                entity.setCancelado(Boolean.FALSE);
                entity.setStatus(Status.CRIADO);
                projetoRepository.save(entity);
-               eventosService.NovoEventoProjetoServico(Acao.NOVO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                       entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                       entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                       entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                         entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                         entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -171,10 +167,6 @@ public class ProjetoService implements ProjetoGateway {
                     entity.setNome(nome);
                     entity.setDescrisao(descrisao);
                     projetoRepository.save(entity);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -203,10 +195,6 @@ public class ProjetoService implements ProjetoGateway {
                     ProjetoEntity entity = projetoRepository.findById(id).get();
                     entity.setFuncionamento(resumoFuncionamento);
                     projetoRepository.save(entity);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -236,10 +224,6 @@ public class ProjetoService implements ProjetoGateway {
                     entity.setLinkGit(link);
                     entity.setTimeStamp(LocalDateTime.now());
                     projetoRepository.save(entity);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -274,10 +258,6 @@ public class ProjetoService implements ProjetoGateway {
                     entity.setArquivos(arquivos);
                     projetoRepository.save(entity);
                     fileServerService.Upload(entity.getCodigoidentificador(), files);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -312,10 +292,6 @@ public class ProjetoService implements ProjetoGateway {
                     entity.getArquivos().addAll(arquivos);
                     projetoRepository.save(entity);
                     fileServerService.AddFile(entity.getCodigoidentificador(), files);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -350,10 +326,6 @@ public class ProjetoService implements ProjetoGateway {
                     }
                     entity.setArquivos(arquivos);
                     projetoRepository.save(entity);
-                    eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                            entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                            entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                            entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                     Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                             entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                             entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -391,10 +363,6 @@ public class ProjetoService implements ProjetoGateway {
                             entity.setTimeStamp(LocalDateTime.now());
                             entity.setStatus(Status.DESENVOLVIMENTO);
                             projetoRepository.save(entity);
-                            eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                             Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -446,10 +414,6 @@ public class ProjetoService implements ProjetoGateway {
                             entity.setTimeStamp(LocalDateTime.now());
                             entity.setStatus(Status.TESTES);
                             projetoRepository.save(entity);
-                            eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                                    entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                                    entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                                    entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                             Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                     entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                     entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -492,10 +456,6 @@ public class ProjetoService implements ProjetoGateway {
                         entity.setTimeStamp(LocalDateTime.now());
                         entity.setStatus(Status.CONLUIDO);
                         projetoRepository.save(entity);
-                        eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                                entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                                entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                                entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                         Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                 entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                 entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
@@ -543,10 +503,6 @@ public class ProjetoService implements ProjetoGateway {
                             entity.setStatus(Status.CANCELADO);
                             entity.setCancelado(Boolean.TRUE);
                             projetoRepository.save(entity);
-                            eventosService.NovoEventoProjetoServico(Acao.ALTERACAO_PROJETO,entity.getNome(),entity.getDescrisao(),
-                                    entity.getCodigoidentificador(),entity.getLinkGit(),entity.getStatus(),entity.getFuncionamento(),
-                                    entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
-                                    entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
                             Projeto response = new Projeto(entity.getNome(), entity.getDescrisao(), entity.getCodigoidentificador(),
                                     entity.getLinkGit(),entity.getStatus(), entity.getFuncionamento(),entity.getArquivos(),entity.getDataCriacao(),entity.getDataInicio(),entity.getDataTestes(),
                                     entity.getDataConclusao(),entity.getDataCancelamento(),entity.getCancelado());
